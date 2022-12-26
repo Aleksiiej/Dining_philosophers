@@ -1,12 +1,5 @@
-set(HEADER_LIST 
-    ${PROJECT_SOURCE_DIR}/include/Fork.hpp
-    ${PROJECT_SOURCE_DIR}/include/Philosopher.hpp
-    ${PROJECT_SOURCE_DIR}/include/Plate.hpp
-    )
-
 set(SRC_LIST
     Philosopher.cpp
-    Plate.cpp
     )
 
 add_library(lib STATIC ${SRC_LIST} ${HEADER_LIST})
@@ -20,4 +13,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_EXTENSIONS NO
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE lib)
-target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Werror -pedantic)
+target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -pedantic)
