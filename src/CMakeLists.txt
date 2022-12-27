@@ -2,9 +2,9 @@ set(SRC_LIST
     Philosopher.cpp
     )
 
-add_library(lib STATIC ${SRC_LIST} ${HEADER_LIST})
-target_include_directories(lib PUBLIC ../include)
+add_library(lib STATIC ${SRC_LIST})
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
 add_executable(${PROJECT_NAME} main.cpp)
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -12,5 +12,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
 )
+
 target_link_libraries(${PROJECT_NAME} PRIVATE lib)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Werror -pedantic)
