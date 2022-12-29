@@ -12,8 +12,9 @@ enum class State
 
 using namespace std::chrono_literals;
 
-bool checkIfForksAreFree(const int i, std::vector<State>& states)
+bool checkIfForksAreFree(const int i, std::vector<State>& states, std::mutex& mt)
 {
+    std::lock_guard lg{mt};
     if(states.size() == 2 and i == 0)
     {
         return (states.at(1) == State::THINKING);
@@ -37,15 +38,10 @@ void think(const int i, std::vector<State>& states, std::mutex& mt)
 {
     mt.lock();
     std::cout << "Philosopher nr: " << i << " thinking..." << std::endl;
-    std::cout << "Hello 1" << std::endl;
     mt.unlock();
-    std::this_thread::sleep_for(2s);
-    mt.lock();
-    std::cout << "Hello 2" << std::endl;
-    while (!checkIfForksAreFree(i, states))
+    while (!checkIfForksAreFree(i, states, mt))
     {
     }
-    mt.unlock();
 }
 
 void takeFork(const int i, std::vector<State>& states, std::mutex& mt)
@@ -60,7 +56,7 @@ void eat(const int i, std::mutex& mt)
     mt.lock();
     std::cout << "Philosopher nr: " << i << " eating..." << std::endl;
     mt.unlock();
-    std::this_thread::sleep_for(2s);
+    std::this_thread::sleep_for(1s);
     
 }
 

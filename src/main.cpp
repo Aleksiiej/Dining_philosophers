@@ -1,6 +1,6 @@
 #include "Philosopher.cpp"
 
-constexpr uint8_t N = 2;
+constexpr uint8_t N = 5;
 
 std::vector<State> states{N, State::THINKING};
 std::mutex mt;
