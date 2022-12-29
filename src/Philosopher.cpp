@@ -37,9 +37,11 @@ void think(const int i, std::vector<State>& states, std::mutex& mt)
 {
     mt.lock();
     std::cout << "Philosopher nr: " << i << " thinking..." << std::endl;
+    std::cout << "Hello 1" << std::endl;
     mt.unlock();
     std::this_thread::sleep_for(2s);
     mt.lock();
+    std::cout << "Hello 2" << std::endl;
     while (!checkIfForksAreFree(i, states))
     {
     }
