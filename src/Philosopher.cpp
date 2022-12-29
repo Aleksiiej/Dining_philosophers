@@ -12,63 +12,64 @@ enum class State
 
 using namespace std::chrono_literals;
 
-bool checkIfForksAreFree(const int i, std::vector<State>& states, std::mutex& mt)
+bool checkIfForksAreFree(const int i, std::vector<State> &states, std::mutex &mt)
 {
     std::lock_guard lg{mt};
-    if(states.size() == 2 and i == 0)
+    if (states.size() == 2 and i == 0)
     {
         return (states.at(1) == State::THINKING);
     }
-    else if(states.size() == 2 and i == 1)
+    else if (states.size() == 2 and i == 1)
     {
         return (states.at(0) == State::THINKING);
     }
-    else if(i == 0)
+    else if (i == 0)
     {
         return (states.at(1) == State::THINKING and states.at(states.size() - 1) == State::THINKING) ? true : false;
     }
-    else if(static_cast<unsigned int>(i) == states.size() - 1)
+    else if (static_cast<unsigned int>(i) == states.size() - 1)
     {
         return (states.at(i - 1) == State::THINKING and states.at(0) == State::THINKING) ? true : false;
     }
-    else return (states.at(i - 1) == State::THINKING and states.at(i + 1) == State::THINKING) ? true : false;
+    else
+        return (states.at(i - 1) == State::THINKING and states.at(i + 1) == State::THINKING) ? true : false;
 }
 
-void think(const int i, std::vector<State>& states, std::mutex& mt)
+void think(const int i, std::vector<State> &states, std::mutex &mt)
 {
-    mt.lock();
-    std::cout << "Philosopher nr: " << i << " thinking..." << std::endl;
-    mt.unlock();
+    {
+        std::lock_guard lg{mt};
+        std::cout << "Philosopher nr: " << i << " thinking..." << std::endl;
+    }
     while (!checkIfForksAreFree(i, states, mt))
     {
     }
 }
 
-void takeFork(const int i, std::vector<State>& states, std::mutex& mt)
+void takeFork(const int i, std::vector<State> &states, std::mutex &mt)
 {
     std::lock_guard<std::mutex> lg{mt};
     std::cout << "Philosopher nr: " << i << " taking fork..." << std::endl;
     states.at(i) = State::EATING;
 }
 
-void eat(const int i, std::mutex& mt)
+void eat(const int i, std::mutex &mt)
 {
-    mt.lock();
-    std::cout << "Philosopher nr: " << i << " eating..." << std::endl;
-    mt.unlock();
+    {
+        std::lock_guard lg{mt};
+        std::cout << "Philosopher nr: " << i << " eating..." << std::endl;
+    }
     std::this_thread::sleep_for(1s);
-    
 }
 
-void putFork(const int i, std::vector<State>& states, std::mutex& mt)
+void putFork(const int i, std::vector<State> &states, std::mutex &mt)
 {
     std::lock_guard<std::mutex> lg{mt};
     std::cout << "Philosopher nr: " << i << " putting fork down..." << std::endl;
     states.at(i) = State::THINKING;
 }
 
-
-auto philosopher = [remainingPortion = 5] (const auto i, auto states, auto mt) mutable
+auto philosopher = [remainingPortion = 5](const auto i, auto states, auto mt) mutable
 {
     while (remainingPortion != 0)
     {
@@ -78,7 +79,8 @@ auto philosopher = [remainingPortion = 5] (const auto i, auto states, auto mt) m
         remainingPortion--;
         putFork(i, states, mt);
     }
-    mt.get().lock();
-    std::cout << "Philosopher nr: " << i << " finished dinner" << std::endl;
-    mt.get().unlock();
+    {
+        std::lock_guard lg{mt.get()};
+        std::cout << "Philosopher nr: " << i << " finished dinner" << std::endl;
+    }
 };
