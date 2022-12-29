@@ -12,9 +12,11 @@ enum class State
     EATING
 };
 
+constexpr uint8_t N = 5;
+std::vector<State> states{N, State::THINKING};
 std::mutex mt;
 
-bool checkIfForksAreFree(const int i, std::vector<State> &states)
+bool checkIfForksAreFree(const int i)
 {
     std::lock_guard lg{mt};
     if (states.size() == 2 and i == 0)
@@ -37,18 +39,18 @@ bool checkIfForksAreFree(const int i, std::vector<State> &states)
         return (states.at(i - 1) == State::THINKING and states.at(i + 1) == State::THINKING) ? true : false;
 }
 
-void think(const int i, std::vector<State> &states)
+void think(const int i)
 {
     {
         std::lock_guard lg{mt};
         std::cout << "Philosopher nr: " << i << " thinking..." << std::endl;
     }
-    while (!checkIfForksAreFree(i, states))
+    while (!checkIfForksAreFree(i))
     {
     }
 }
 
-void takeFork(const int i, std::vector<State> &states)
+void takeFork(const int i)
 {
     std::lock_guard<std::mutex> lg{mt};
     std::cout << "Philosopher nr: " << i << " taking fork..." << std::endl;
@@ -64,22 +66,22 @@ void eat(const int i)
     std::this_thread::sleep_for(1s);
 }
 
-void putFork(const int i, std::vector<State> &states)
+void putFork(const int i)
 {
     std::lock_guard<std::mutex> lg{mt};
     std::cout << "Philosopher nr: " << i << " putting fork down..." << std::endl;
     states.at(i) = State::THINKING;
 }
 
-auto philosopher = [portions = 5](const auto i, auto states) mutable
+auto philosopher = [portions = 5](const auto i) mutable
 {
     while (portions != 0)
     {
-        think(i, states);
-        takeFork(i, states);
+        think(i);
+        takeFork(i);
         eat(i);
         portions--;
-        putFork(i, states);
+        putFork(i);
     }
     {
         std::lock_guard lg{mt};
