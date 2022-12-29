@@ -9,10 +9,11 @@ enum class State
     THINKING,
     EATING
 };
+std::mutex mt;
 
 using namespace std::chrono_literals;
 
-bool checkIfForksAreFree(const int i, std::vector<State> &states, std::mutex &mt)
+bool checkIfForksAreFree(const int i, std::vector<State> &states)
 {
     std::lock_guard lg{mt};
     if (states.size() == 2 and i == 0)
@@ -35,25 +36,25 @@ bool checkIfForksAreFree(const int i, std::vector<State> &states, std::mutex &mt
         return (states.at(i - 1) == State::THINKING and states.at(i + 1) == State::THINKING) ? true : false;
 }
 
-void think(const int i, std::vector<State> &states, std::mutex &mt)
+void think(const int i, std::vector<State> &states)
 {
     {
         std::lock_guard lg{mt};
         std::cout << "Philosopher nr: " << i << " thinking..." << std::endl;
     }
-    while (!checkIfForksAreFree(i, states, mt))
+    while (!checkIfForksAreFree(i, states))
     {
     }
 }
 
-void takeFork(const int i, std::vector<State> &states, std::mutex &mt)
+void takeFork(const int i, std::vector<State> &states)
 {
     std::lock_guard<std::mutex> lg{mt};
     std::cout << "Philosopher nr: " << i << " taking fork..." << std::endl;
     states.at(i) = State::EATING;
 }
 
-void eat(const int i, std::mutex &mt)
+void eat(const int i)
 {
     {
         std::lock_guard lg{mt};
@@ -62,25 +63,25 @@ void eat(const int i, std::mutex &mt)
     std::this_thread::sleep_for(1s);
 }
 
-void putFork(const int i, std::vector<State> &states, std::mutex &mt)
+void putFork(const int i, std::vector<State> &states)
 {
     std::lock_guard<std::mutex> lg{mt};
     std::cout << "Philosopher nr: " << i << " putting fork down..." << std::endl;
     states.at(i) = State::THINKING;
 }
 
-auto philosopher = [remainingPortion = 5](const auto i, auto states, auto mt) mutable
+auto philosopher = [remainingPortion = 5](const auto i, auto states) mutable
 {
     while (remainingPortion != 0)
     {
-        think(i, states, mt);
-        takeFork(i, states, mt);
-        eat(i, mt);
+        think(i, states);
+        takeFork(i, states);
+        eat(i);
         remainingPortion--;
-        putFork(i, states, mt);
+        putFork(i, states);
     }
     {
-        std::lock_guard lg{mt.get()};
+        std::lock_guard lg{mt};
         std::cout << "Philosopher nr: " << i << " finished dinner" << std::endl;
     }
 };

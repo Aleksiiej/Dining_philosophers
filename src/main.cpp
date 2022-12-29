@@ -3,7 +3,6 @@
 constexpr uint8_t N = 5;
 
 std::vector<State> states{N, State::THINKING};
-std::mutex mt;
 
 int main()
 {
@@ -12,7 +11,7 @@ int main()
 
     for (int i = 0; i < N; i++)
     {
-        threads.push_back(std::thread(philosopher, i, std::ref(states), std::ref(mt)));
+        threads.push_back(std::thread(philosopher, i, std::ref(states)));
     }
 
     for (int i = 0; i < N; i++)
