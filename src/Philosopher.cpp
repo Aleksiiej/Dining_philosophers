@@ -4,14 +4,15 @@
 #include <thread>
 #include <vector>
 
+using namespace std::chrono_literals;
+
 enum class State
 {
     THINKING,
     EATING
 };
-std::mutex mt;
 
-using namespace std::chrono_literals;
+std::mutex mt;
 
 bool checkIfForksAreFree(const int i, std::vector<State> &states)
 {
