@@ -71,14 +71,14 @@ void putFork(const int i, std::vector<State> &states)
     states.at(i) = State::THINKING;
 }
 
-auto philosopher = [remainingPortion = 5](const auto i, auto states) mutable
+auto philosopher = [portions = 5](const auto i, auto states) mutable
 {
-    while (remainingPortion != 0)
+    while (portions != 0)
     {
         think(i, states);
         takeFork(i, states);
         eat(i);
-        remainingPortion--;
+        portions--;
         putFork(i, states);
     }
     {
