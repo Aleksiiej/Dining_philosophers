@@ -3,6 +3,7 @@ set(SRC_LIST
     )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build)
+#add_compile_options(-fsanitize=address)
 
 add_library(lib STATIC ${SRC_LIST})
 set_target_properties(lib PROPERTIES

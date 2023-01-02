@@ -1,10 +1,12 @@
 #include <chrono>
 #include <iostream>
 #include <mutex>
+#include <random>
 #include <thread>
 #include <vector>
 
 using namespace std::chrono_literals;
+
 
 enum class State
 {
@@ -15,6 +17,14 @@ enum class State
 constexpr uint8_t N = 5;
 std::vector<State> states{N, State::THINKING};
 std::mutex mt;
+std::random_device rd;
+
+int getRandomTime()
+{
+    std::mt19937 rng{rd()};
+    std::uniform_int_distribution<> distrib(250, 1500);
+    return distrib(rng);
+}
 
 bool checkIfForksAreFree(const int i)
 {
@@ -63,7 +73,7 @@ void eat(const int i)
         std::lock_guard lg{mt};
         std::cout << "Philosopher nr: " << i << " eating..." << std::endl;
     }
-    std::this_thread::sleep_for(1s);
+    std::this_thread::sleep_for(static_cast<std::chrono::milliseconds>(getRandomTime()));
 }
 
 void putFork(const int i)
