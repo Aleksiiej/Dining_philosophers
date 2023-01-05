@@ -1,3 +1,4 @@
+#include <atomic>
 #include <chrono>
 #include <iostream>
 #include <mutex>
@@ -49,20 +50,19 @@ void putFork(const int i)
     std::cout << "Philosopher nr: " << i << " putting fork down..." << std::endl;
 }
 
-auto philosopher = [totalPortions = 5, eatenPortions = 0](const auto i) mutable
+auto philosopher = [eatenPortions = 0](const auto i, auto dinnerReady) mutable
 {
-    while (totalPortions != 0)
+    do
     {
         think(i);
         {
             std::scoped_lock sl(mutexes.at(i), mutexes.at((i + 1) % 5));
             takeFork(i);
             eat(i);
-            totalPortions--;
             eatenPortions++;
             putFork(i);
         }
-    }
+    } while (dinnerReady.get() == true);
     {
         std::lock_guard lg{iostream_mt};
         std::cout << "Philosopher nr: " << i << " finished dinner, ate " << eatenPortions << " portions" << std::endl;
