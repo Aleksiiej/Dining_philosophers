@@ -3,7 +3,7 @@
 ## Project Overview
 The Dining Philosophers project is a multithreading simulation designed to demonstrate proficiency in coordinating multi-threaded programs. This implementation particularly focuses on resource sharing among five threads, symbolizing the classic Dining Philosophers problem in computer science.
 
-![Screenshot from 2023-11-27 15-22-19](https://github.com/Aleksiiej/Dining_philosophers/assets/94867075/83cc10dd-a949-41dc-93af-d603125bb696)
+![image](https://github.com/Aleksiiej/Dining_philosophers/assets/94867075/be964cf2-35d1-4c6d-a3bf-563374ac816b)
 
 ## Key Features:
 - Resource Management: Manages shared resources among multiple threads, mimicking the scenario where five philosophers share a limited number of utensils.
