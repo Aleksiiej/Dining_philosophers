@@ -11,6 +11,7 @@ resource handling.
       
 ## Technical Stack:
 - Language: C++
+- Development Tool: Visual Studio Code
 - Concurrency Tools: Standard C++ mutexes, lock guards, and threading libraries.
 
 ## Project Goals:
